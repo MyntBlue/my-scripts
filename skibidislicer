@@ -1,0 +1,35 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local FileName = "shirt.png"
+local ImageURL = "https://imgshare.cc/api/image/proxy?id=quajuzcv&token=eyJpbWFnZUlkIjoicXVhanV6Y3YiLCJ0aW1lc3RhbXAiOjE3OTMzNzczNDYxMDgsInNpZ25hdHVyZSI6ImRlODQ1NDdlMDMxYjFhYzkxZGU2ZTQzNTMxZTI1Nzk2NDVhOTZmZjcxMDkwMjE1NjU0MDI1MTRkZjhmM2Y3YmMifQ&v=1793377342149"
+
+if not isfile(FileName) then
+    writefile(FileName, game:HttpGet(ImageURL))
+end
+
+local Asset = getcustomasset(FileName)
+
+local function ApplyShirt(Character)
+    local Shirt = Character:FindFirstChildOfClass("ShirtGraphic")
+
+    if not Shirt then
+        Shirt = Instance.new("ShirtGraphic")
+        Shirt.Name = "Shirt Graphic"
+        Shirt.Parent = Character
+    end
+
+    Shirt.Graphic = Asset
+
+    Shirt:GetPropertyChangedSignal("Graphic"):Connect(function()
+        if Shirt.Graphic ~= Asset then
+            Shirt.Graphic = Asset
+        end
+    end)
+end
+
+LocalPlayer.CharacterAdded:Connect(ApplyShirt)
+
+if LocalPlayer.Character then
+    ApplyShirt(LocalPlayer.Character)
+end
